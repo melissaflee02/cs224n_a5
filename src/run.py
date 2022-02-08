@@ -123,6 +123,17 @@ elif args.function == 'finetune':
             warmup_tokens=512*20,
             final_tokens=200*len(pretrain_dataset)*block_size,
             num_workers=4)
+    else:
+        gpt_model.load_state_dict(torch.load(args.reading_params_path))
+        gpt_model = gpt_model.to(device)
+        tconf = trainer.TrainerConfig(max_epochs=10,
+            batch_size=256,
+            learning_rate=6e-4,
+            lr_decay=True,
+            warmup_tokens=512*20,
+            final_tokens=200*len(pretrain_dataset)*block_size,
+            num_workers=4)
+
     finetune_text = open(args.finetune_corpus_path, 'r').read()
     dataset = dataset.NameDataset(pretrain_dataset, finetune_text)
     cur_trainer = trainer.Trainer(gpt_model, dataset, None, tconf)
