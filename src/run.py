@@ -138,7 +138,7 @@ elif args.function == 'finetune':
     dataset = dataset.NameDataset(pretrain_dataset, finetune_text)
     cur_trainer = trainer.Trainer(gpt_model, dataset, None, tconf)
     cur_trainer.train()
-    torch.save(model.state_dict(), args.writing_params_path)
+    # torch.save(model.state_dict(), args.writing_params_path)
 
 elif args.function == 'evaluate':
     assert args.outputs_path is not None
