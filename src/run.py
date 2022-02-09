@@ -56,7 +56,7 @@ Don't change above here; write your code below
 
 if args.variant == 'vanilla':
     # TODO [part c]: Make some model here
-    gpt_model = model.GPT(mconf)
+    model = model.GPT(mconf)
 elif args.variant == 'synthesizer':
     pass # TODO [part g]: Make some other model here
 
@@ -125,8 +125,8 @@ elif args.function == 'finetune':
             num_workers=4,
             ckpt_path=args.writing_params_path)
     else:
-        gpt_model.load_state_dict(torch.load(args.reading_params_path))
-        gpt_model = gpt_model.to(device)
+        model.load_state_dict(torch.load(args.reading_params_path))
+        model = model.to(device)
         tconf = trainer.TrainerConfig(max_epochs=10,
             batch_size=256,
             learning_rate=6e-4,
@@ -138,7 +138,7 @@ elif args.function == 'finetune':
 
     finetune_text = open(args.finetune_corpus_path, 'r').read()
     dataset = dataset.NameDataset(pretrain_dataset, finetune_text)
-    cur_trainer = trainer.Trainer(gpt_model, dataset, None, tconf)
+    cur_trainer = trainer.Trainer(model, dataset, None, tconf)
     cur_trainer.train()
     cur_trainer.save_checkpoint()
 
