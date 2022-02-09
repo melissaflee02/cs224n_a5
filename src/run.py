@@ -57,6 +57,7 @@ Don't change above here; write your code below
 if args.variant == 'vanilla':
     # TODO [part c]: Make some model here
     model = model.GPT(mconf)
+    model = model.to(device)
 elif args.variant == 'synthesizer':
     pass # TODO [part g]: Make some other model here
 
@@ -126,7 +127,6 @@ elif args.function == 'finetune':
             ckpt_path=args.writing_params_path)
     else:
         model.load_state_dict(torch.load(args.reading_params_path))
-        model = model.to(device)
         tconf = trainer.TrainerConfig(max_epochs=10,
             batch_size=256,
             learning_rate=6e-4,
