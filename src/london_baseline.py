@@ -4,16 +4,17 @@
 # Your solution here should only be a few lines.
 import argparse
 import utils
+import tqdm import tqdm
 
 argp = argparse.ArgumentParser()
 argp.add_argument('--eval_corpus_path',
     help="Path of the corpus to evaluate on", default=None)
 args = argp.parse_args()
 
-predictions = ['London'] * len(open(args.eval_corpus_path, 'r').readlines())
-# predictions = []
-# for line in open(args.eval_corpus_path, 'r').readlines():
-#     predictions.append('London')
+# predictions = ['London'] * len(open(args.eval_corpus_path, 'r').readlines())
+predictions = []
+for line in tqdm(open(args.eval_corpus_path, 'r')):
+    predictions.append('London')
 total, correct = utils.evaluate_places(args.eval_corpus_path, predictions)
 
 if total > 0:
