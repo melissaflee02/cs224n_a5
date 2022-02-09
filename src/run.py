@@ -122,7 +122,8 @@ elif args.function == 'finetune':
             lr_decay=True,
             warmup_tokens=512*20,
             final_tokens=200*len(pretrain_dataset)*block_size,
-            num_workers=4)
+            num_workers=4,
+            ckpt_path=args.writing_params_path)
     else:
         gpt_model.load_state_dict(torch.load(args.reading_params_path))
         gpt_model = gpt_model.to(device)
@@ -132,13 +133,14 @@ elif args.function == 'finetune':
             lr_decay=True,
             warmup_tokens=512*20,
             final_tokens=200*len(pretrain_dataset)*block_size,
-            num_workers=4)
+            num_workers=4,
+            ckpt_path=args.writing_params_path)
 
     finetune_text = open(args.finetune_corpus_path, 'r').read()
     dataset = dataset.NameDataset(pretrain_dataset, finetune_text)
     cur_trainer = trainer.Trainer(gpt_model, dataset, None, tconf)
     cur_trainer.train()
-    # torch.save(model.state_dict(), args.writing_params_path)
+    cur_trainer.save_checkpoint()
 
 elif args.function == 'evaluate':
     assert args.outputs_path is not None
