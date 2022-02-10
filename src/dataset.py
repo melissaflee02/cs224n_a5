@@ -220,7 +220,7 @@ class CharCorruptionDataset(Dataset):
         masked_string = prefix + self.MASK_CHAR + suffix + self.MASK_CHAR + masked_content
         # add padding
         masked_string += self.PAD_CHAR * (self.block_size - len(masked_string))
-        assert len(masked_string) == self.block.size
+        assert len(masked_string) == self.block_size
 
 # 4. We now use masked_string to construct the input and output example pair. To
 # do so, simply take the input string to be masked_string[:-1], and the output
