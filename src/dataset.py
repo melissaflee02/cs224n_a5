@@ -194,7 +194,7 @@ class CharCorruptionDataset(Dataset):
 # - IMPORTANT: You are free to decide how to perform this operation, but
 # make sure that the length is picked _randomly_ (has a chance of being more or
 # less than 1/4 the length of the truncated document) for full credit.
-        masked_content_length = random.randint(0.2*truncated_length, 0.3*truncated_length)
+        masked_content_length = random.randint(int(0.15*truncated_length), int(0.35*truncated_length))
         prefix_length = random.randint(0, truncated_length - masked_content_length)
         suffix_length = truncated_length - masked_content_length - prefix_length
         suffix_start = prefix_length + masked_content_length
