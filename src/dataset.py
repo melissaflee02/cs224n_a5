@@ -168,7 +168,75 @@ class CharCorruptionDataset(Dataset):
 
     def __getitem__(self, idx):
         # TODO [part e]: see spec above
-        raise NotImplementedError
+# 0. Use the idx argument of __getitem__ to retrieve the element of self.data
+# at the given index. We'll call the resulting data entry a document.
+        document = self.data[idx]
+
+# 1. Randomly truncate the document to a length no less than 4 characters,
+# and no more than int(self.block_size*7/8) characters.
+
+# - IMPORTANT: You are free to decide how to perform this random truncation, but
+# make sure that the length is picked _randomly_ (every possible length from 4
+# to int(self.block_size*7/8) has a chance of being picked) for full credit.
+        truncated_length = random.randint(4, int(self.block_size*7/8))
+        truncated_length = min(truncated_length, len(document))
+        truncated_text = document[0:truncated_length]
+
+# 2. Now, break the (truncated) document into three substrings:
+    
+#     [prefix] [masked_content] [suffix]
+
+#   In other words, choose three strings prefix, masked_content and suffix
+#     such that prefix + masked_content + suffix = [the original document].
+#   The length of [masked_content] should be random, and 1/4 the length of the
+#     truncated document on average.
+
+# - IMPORTANT: You are free to decide how to perform this operation, but
+# make sure that the length is picked _randomly_ (has a chance of being more or
+# less than 1/4 the length of the truncated document) for full credit.
+        masked_content_length = random.randint(0.2*truncated_length, 0.3*truncated_length)
+        prefix_length = random.randint(0, truncated_length - masked_content_length)
+        suffix_length = truncated_length - masked_content_length - prefix_length
+        suffix_start = prefix_length + masked_content_length
+
+        prefix = truncated_text[0:prefix_length]
+        masted_content = truncated_text[prefix_length:suffix_start]
+        suffix = truncated_text[suffix_start:]
+        assert len(prefix) + len(masked_content) + len(suffix) == len(truncated_text)
+
+# 3. Rearrange these substrings into the following form:
+
+#     [prefix] MASK_CHAR [suffix] MASK_CHAR [masked_content] [pads]
+  
+#   This resulting string, denoted masked_string, serves as the output example.
+#   Here MASK_CHAR is the masking character defined in Vocabulary Specification,
+#     and [pads] is a string of repeated PAD_CHAR characters chosen so that the
+#     entire string is of length self.block_size.
+#   Intuitively, the [masked_content], a string, is removed from the document and
+#     replaced with MASK_CHAR (the masking character defined in Vocabulary
+#     Specification). After the suffix of the string, the MASK_CHAR is seen again,
+#     followed by the content that was removed, and the padding characters.
+
+        masked_string = prefix + self.MASK_CHAR + suffix + self.MASK_CHAR + masked_content
+        # add padding
+        masked_string += self.PAD_CHAR * (self.block_size - len(masked_string))
+        assert len(masked_string) == self.block.size
+
+# 4. We now use masked_string to construct the input and output example pair. To
+# do so, simply take the input string to be masked_string[:-1], and the output
+# string to be masked_string[1:]. In other words, for each character, the goal is
+# to predict the next character in the masked string.
+
+        x = masked_string[:-1]
+        y = masked_string[1:]
+
+# 5. Making use of the vocabulary that you defined, encode the resulting input
+# and output strings as Long tensors and return the resulting data point.
+
+        x = torch.LongTensor([self.stoi[c] for c in x])
+        y = torch.LongTensor([self.stoi[c] for c in y])
+        
+        return x, y
 
 """
 Code under here is strictly for your debugging purposes; feel free to modify
