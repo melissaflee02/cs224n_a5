@@ -200,7 +200,7 @@ class CharCorruptionDataset(Dataset):
         suffix_start = prefix_length + masked_content_length
 
         prefix = truncated_text[0:prefix_length]
-        masted_content = truncated_text[prefix_length:suffix_start]
+        masked_content = truncated_text[prefix_length:suffix_start]
         suffix = truncated_text[suffix_start:]
         assert len(prefix) + len(masked_content) + len(suffix) == len(truncated_text)
 
@@ -235,7 +235,7 @@ class CharCorruptionDataset(Dataset):
 
         x = torch.LongTensor([self.stoi[c] for c in x])
         y = torch.LongTensor([self.stoi[c] for c in y])
-        
+
         return x, y
 
 """
