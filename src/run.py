@@ -60,7 +60,7 @@ if args.variant == 'vanilla':
     model = model.to(device)
 elif args.variant == 'synthesizer':
     mconf.synthesizer = True
-    model = GPT(mconf)
+    model = model.GPT(mconf)
     model = model.to(device)
 
 # From here on, your code should be identical independent of which
