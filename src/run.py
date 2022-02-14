@@ -59,7 +59,9 @@ if args.variant == 'vanilla':
     model = model.GPT(mconf)
     model = model.to(device)
 elif args.variant == 'synthesizer':
-    pass # TODO [part g]: Make some other model here
+    mconf.synthesizer = True
+    model = GPT(mconf)
+    model = model.to(device)
 
 # From here on, your code should be identical independent of which
 # variant (vanilla or synthesizer) has been chosen.
