@@ -140,7 +140,7 @@ elif args.function == 'finetune':
             num_workers=4,
             ckpt_path=args.writing_params_path)
     else:
-        # model.load_state_dict(torch.load(args.reading_params_path))
+        model.load_state_dict(torch.load(args.reading_params_path))
         tconf = trainer.TrainerConfig(max_epochs=10,
             batch_size=256,
             learning_rate=6e-4,
